@@ -34,7 +34,6 @@ const newUserData = async (decodeValue, req, res) => {
     imageURL: decodeValue.picture,
     user_id: decodeValue.user_id,
     email_verfied: decodeValue.email_verified,
-    role:"admin",
     auth_time: decodeValue.auth_time,
   });
   try {
@@ -46,22 +45,66 @@ const newUserData = async (decodeValue, req, res) => {
 };
 
 const updateUserData = async (decodeValue, req, res) => {
-    const filter = { user_id: decodeValue.user_id };
-    const options = {
-      upsert: true,
-      new: true,
-    };
-  
-    try {
-      const result = await user.findOneAndUpdate(
-        filter,
-        { auth_time: decodeValue.auth_time },
-        options
-      );
-      res.status(200).send({ user: result });
-    } catch (err) {
-      res.status(400).send({ success: false, msg: err });
-    }
+  const filter = { user_id: decodeValue.user_id };
+  const options = {
+    upsert: true,
+    new: true,
   };
+
+  try {
+    const result = await user.findOneAndUpdate(
+      filter,
+      { auth_time: decodeValue.auth_time },
+      options
+    );
+    res.status(200).send({ user: result });
+  } catch (err) {
+    res.status(400).send({ success: false, msg: err });
+  }
+};
+
+router.get("/getUser/:userId", async (req, res) => {
+  const filter = { _id: req.params.userId };
+  const options = {
+    upsert: true,
+    new: true,
+  };
+
+  const userExists = await user.findOne({ _id: filter }, options);
+  if (!userExists)
+    return res.status(400).send({ success: false, msg: "Invalid User ID" });
+  if (userExists.favourites) {
+    res.status(200).send({ success: true, data: userExists });
+  } else {
+    res.status(200).send({ success: false, data: null });
+  }
+});
+
+router.put("/update/:userId", async (decodeValue, req, res) => {
+  const filter = { _id: req.params.userId };
+  const options = {
+    upsert: true,
+    new: true,
+  };
+  try {
+    const result = await user.findOneAndUpdate(
+      filter,
+      {
+        name: decodeValue.name,
+        email: decodeValue.email,
+        imageURL: decodeValue.picture,
+        user_id: decodeValue.user_id,
+        email_verfied: decodeValue.email_verified,
+        auth_time: decodeValue.auth_time,
+        bio: req.body.bio,
+      },
+      options
+    );
+    res.status(200).send({ user: result });
+  } catch (error) {
+    res.status(400).send({ success: false, msg: error });
+  }
+});
+
 
 module.exports = router;

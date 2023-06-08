@@ -23,10 +23,26 @@ const UserSchema = mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    role: {
-      type: String,
-      required: true,
-    },
+    posts: [
+      {
+        imageId: String,
+      },
+    ],
+
+    friends: [
+      {
+        friendId: String,
+      },
+      {
+        friendName: String,
+      },
+    ],
+
+    bio: [
+      {
+        type: String,
+      },
+    ],
 
     auth_time: {
       type: String,

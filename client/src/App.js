@@ -3,9 +3,6 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import {
   getAuth,
-  GoogleAuthProvider,
-  inMemoryPersistence,
-  signInWithPopup,
 } from "firebase/auth";
 import { app } from "./config/firebase.config";
 import { validateUser } from "./api";
@@ -26,7 +23,7 @@ const App = () => {
   const firebaseAuth = getAuth(app);
   const navigate = useNavigate();
   const [
-    { user, allSongs, song, isSongPlaying, miniPlayer },
+    { user },
     dispatch,
   ] = useStateValue();
   const [isLoading, setIsLoading] = useState(false);

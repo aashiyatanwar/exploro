@@ -14,3 +14,14 @@ export const validateUser = async (token) => {
     return null;
   }
 };
+
+  export const getUserById = async (userId) => {
+    try {
+      const res = axios.get(`${baseURL}api/users/getUser/${userId}`);
+
+      return res;
+    } catch (error) {
+      return null;
+    }
+  
+};
