@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './DropdownMenu.css';
 
+let setOption
 const DropdownMenu = ({ data }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
@@ -16,7 +17,10 @@ const DropdownMenu = ({ data }) => {
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
     setIsOpen(false);
+    setOption = option
   };
+
+  
 
   return (
     <div
@@ -46,4 +50,4 @@ const DropdownMenu = ({ data }) => {
   );
 };
 
-export default DropdownMenu;
+export {DropdownMenu , setOption};

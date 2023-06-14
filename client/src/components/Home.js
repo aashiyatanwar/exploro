@@ -1,55 +1,54 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import { Preptime } from "./Preptime";
-import { FilterMoney} from "./FilterMoney"
-import DropdownMenu from "./Dropdown/DropdownMenu";
+import { Preptime, sample_time } from "./Preptime";
+import { FilterMoney, sample_money } from "./FilterMoney";
+import { DropdownMenu, setOption } from "./Dropdown/DropdownMenu";
+
+import Filter from "./Filter/Filter";
+import Carousel from "./sliding/Carousel";
 
 import { Sample } from "./sample";
+
 const Home = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [images, setImages] = useState([]);
+
   useEffect(() => {
-    fetchData();
+    const updateImages = () => {
+      const windowWidth = window.innerWidth;
+      const imageUrls = [];
+      const categories = ["food"];
+      const widths = [
+        "600",
+        "500",
+        "550",
+        "500",
+        "450",
+        "400",
+        "350",
+        "300",
+        "350",
+        "300",
+      ];
+
+      for (let width of widths) {
+        const imageUrl = `https://source.unsplash.com/${windowWidth}x${width}/?${categories}`;
+        imageUrls.push(imageUrl);
+      }
+
+      setImages(imageUrls);
+    };
+
+    updateImages();
+    window.addEventListener("resize", updateImages);
+    return () => {
+      window.removeEventListener("resize", updateImages);
+    };
   }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/data");
-      const jsonData = await response.json();
-
-      setData(jsonData);
-      setLoading(false);
-
-      console.log("jsonData", jsonData);
-    } catch (error) {
-      console.log("Error:", error);
-      setLoading(false);
-    }
-  };
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  console.log("data", data);
-
-  const diet = [];
-  data.Sample.map((item) => {
-    diet.push(item.Diet);
-  });
-  console.log("diet", diet);
-  const uniqueData = diet.filter((item, index) => {
-    // Check if the index of the current item is the first occurrence
-    return diet.indexOf(item) === index;
-  });
-
-  console.log(uniqueData);
-
   return (
     <div>
       <Navbar></Navbar>
-      <Preptime />
-      <FilterMoney></FilterMoney>
-      <DropdownMenu data={uniqueData} />
+      <Filter></Filter>
+      <Carousel images={images} />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState , useEffect}from 'react';
 import ReactDom from 'react-dom';
 import {Component} from 'react';
 import RangeSelector from 'devextreme-react/range-selector'
@@ -9,7 +9,54 @@ import DataGrid from 'devextreme-react/data-grid';
 import {Sample} from './sample';
 
 const columns = ['RecipeName', 'TotalTimeInMins','PrepTimeInMins', 'Course', 'Cuisine', 'Diet'];
-export class Preptime extends React.Component {
+let sample_time = []
+
+
+const Preptime  = () => {
+  const[selectedsample , setSelectedSample] = useState([])
+  
+  const filterTime = ({ value }) => { 
+   sample_time = Sample.filter((Sample) => (Sample.PrepTimeInMins >= value[0] && Sample.PrepTimeInMins <=  value[1])
+     || !value.length)
+     setSelectedSample(sample_time)
+    //console.log("time" , sample_time);
+  };
+
+  
+    return (
+      <React.Fragment>
+        <RangeSelector
+          id="range-selector"
+          title="Filter Time from dataset "
+          dataSource={Sample}
+          dataSourceField="PrepTimeInMins"
+          onValueChanged={filterTime}
+        >
+          <Margin top={20} />
+          <Scale tickInterval={10} minorTickInterval={10}>
+            <Label>
+              <Format type="Decimal" />
+            </Label>
+          </Scale>
+          <Behavior callValueChanged="onMoving" />
+        </RangeSelector>
+        <h2 className="grid-header">PrepTime Recipe</h2>
+        <DataGrid
+          dataSource={selectedsample}
+          columns={columns}
+          showBorders={true}
+          columnAutoWidth={true}
+        />
+      </React.Fragment>
+    );
+  
+}
+   
+export {sample_time , Preptime }
+
+
+
+/*export class Preptime extends React.Component {
   constructor(props) {
     super(props);
 
@@ -48,15 +95,18 @@ export class Preptime extends React.Component {
     );
   }
 
+  
   filterTime({ value }) {
-    this.setState({
+    /*this.setState({
       selectedsample: Sample
         .filter((Sample) => (Sample.PrepTimeInMins >= value[0] && Sample.PrepTimeInMins <=  value[1])
           || !value.length),
     });
     console.log(value[0],value[1])
-  }
-}
+    */
+  
+
+
 
 
 
